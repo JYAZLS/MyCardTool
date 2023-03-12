@@ -1,0 +1,20 @@
+{
+    "files.encoding": "gb2312",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "*.sln":true,
+        "Temp":true,
+        "ProjectSettings":true,
+        "*.csproj":true,
+        "**/*.meta":true,
+        "obj":true,
+        "Library":true,
+        "Packages":true
+    },
+
+}
