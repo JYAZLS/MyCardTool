@@ -1,4 +1,4 @@
-using QFramework;
+  using QFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +23,6 @@ namespace CardGameApp
     public class BattleSystem : AbstractSystem, IBattleSystem
     {
         private IGameModel mModel;
-        private IGameSystem mSystem;
         public int TeamTotalNum { 
             get { return mModel.playerInfo.PlayerTeamNumber; } 
             set { mModel.playerInfo.PlayerTeamNumber = value; }
@@ -36,9 +35,7 @@ namespace CardGameApp
         
         protected override void OnInit()
         {
-            mModel = this.GetModel<IGameModel>();
-            mSystem = this.GetSystem<IGameSystem>();
-            
+            mModel = this.GetModel<IGameModel>();          
             ChooseCharacter = null;
         }
         /// <summary>
@@ -85,7 +82,8 @@ namespace CardGameApp
         {
             if (ChooseCharacter != null)
             {
-                mSystem.CharacterPlayerPool[ChooseCharacter.CharacterAttr.baseName].Release(ChooseCharacter.mGameObject);
+                Dictionary<string, CharacterPool> CharacterPlayerPool = ResManager.Intance.CharacterPlayerPool;
+                CharacterPlayerPool[ChooseCharacter.CharacterAttr.baseName].Release(ChooseCharacter.mGameObject);
                 ChooseCharacter = null;
             }    
         }
@@ -115,7 +113,8 @@ namespace CardGameApp
                 {
                     if(it.mGameObject.transform == _object.mGameObject.transform)
                     {
-                        mSystem.CharacterPlayerPool[_object.CharacterAttr.baseName].Release(_object.mGameObject);
+                        Dictionary<string, CharacterPool> CharacterPlayerPool = ResManager.Intance.CharacterPlayerPool;
+                        CharacterPlayerPool[_object.CharacterAttr.baseName].Release(_object.mGameObject);
                         team.Remove(it);
                         return;
                     }

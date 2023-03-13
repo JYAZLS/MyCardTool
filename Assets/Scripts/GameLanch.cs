@@ -10,6 +10,9 @@ namespace CardGameApp
     {
         private void Awake()
         {
+            this.gameObject.AddComponent<SceneController>();
+            GameObject ResManager = new GameObject("ResManager");
+            ResManager.AddComponent<ResManager>();           
             GameObject.DontDestroyOnLoad(this.gameObject);
         }
         void Start()

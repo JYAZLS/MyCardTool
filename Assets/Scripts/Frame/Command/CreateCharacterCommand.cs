@@ -2,7 +2,6 @@ using QFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CardGameApp.LoadCharacterInfoEndCommand;
 
 namespace CardGameApp
 {
@@ -16,13 +15,57 @@ namespace CardGameApp
         }
         protected override void OnExecute()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
             IBattleSystem battleSystem = this.GetSystem<IBattleSystem>();
             IUISystem UISystem = this.GetSystem<IUISystem>();
             //gameSystem.CharacterPlayerPool[Name].Get();
-            ICharacter gameobject = gameSystem.CreateCharacter(CharacterName);
+            ICharacter gameobject = CreateCharacter(CharacterName);
             battleSystem.SetChooseCharacter(gameobject);
             UISystem.PopPanel();
+        }
+
+        public ICharacter CreateCharacter(string Name)
+        {
+            Dictionary<string, CharacterPool> CharacterPlayerPool = ResManager.Intance.CharacterPlayerPool;
+            Dictionary<string, CharacterInfo> CharacterBaseInfo =  ResManager.Intance.CharacterBaseInfo;
+            //BattleUnit Unit;
+            ICharacter character;
+            GameObject Character = CharacterPlayerPool[Name].Get();
+            
+            //加载角色信息
+            if(Character.GetComponent<ICharacter>() ==null)
+            {
+                if(CharacterBaseInfo[Name].Type == "英雄")
+                {
+                    Master Unit;
+                    Unit = Character.AddComponent<Master>();
+                    Unit.mGameObject = Character;
+                    Unit.CharacterAttr.Name = Name;
+                    Unit.CharacterAttr.baseName = Name;
+                    Unit.CharacterAttr.Hp = CharacterBaseInfo[Name].Hp;
+                    Unit.CharacterAttr.CurrentHp = CharacterBaseInfo[Name].CurrentHP;
+                    Unit.Military.MilitaryName = CharacterBaseInfo[Name].Type;
+                    Unit.Military.MoveRange = CharacterBaseInfo[Name].MoveRange;
+                    character = (ICharacter)Unit;
+                }
+                else
+                {
+                    Solder Unit;
+                    Unit = Character.AddComponent<Solder>();
+                    Unit.mGameObject = Character;
+                    Unit.CharacterAttr.Name = Name;
+                    Unit.CharacterAttr.baseName = Name;
+                    Unit.CharacterAttr.Hp = CharacterBaseInfo[Name].Hp;
+                    Unit.CharacterAttr.CurrentHp = CharacterBaseInfo[Name].CurrentHP;
+                    Unit.Military.MilitaryName = CharacterBaseInfo[Name].Type;
+                    Unit.Military.MoveRange = CharacterBaseInfo[Name].MoveRange;
+                    character = (ICharacter)Unit;
+                }     
+            }
+            else
+            {
+                character = Character.GetComponent<ICharacter>();
+            }
+            return character;
         }
     }
 }

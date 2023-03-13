@@ -17,11 +17,9 @@ namespace CardGameApp
         }
         protected override void OnExecute()
         {
-            IUISystem msystem = this.GetSystem<IUISystem>();
-            
-            if (!msystem.UI_GameObjectRes.ContainsKey(UIName))//如果不存在该资源，则添加资源
+            if (!ResManager.Intance.UI_GameObjectRes.ContainsKey(UIName))//如果不存在该资源，则添加资源
             {
-                msystem.UI_GameObjectRes.Add(UIName, gameobject);
+                ResManager.Intance.UI_GameObjectRes.Add(UIName, gameobject);
             }
         }
     }
@@ -36,8 +34,7 @@ namespace CardGameApp
         }
         protected override void OnExecute()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
-            gameSystem.ButtonPool.SetPrefab(gameObject);
+            ResManager.Intance.ButtonPool.SetPrefab(gameObject);
         }
     }
 
@@ -51,8 +48,7 @@ namespace CardGameApp
         }
         protected override void OnExecute()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
-            gameSystem.PathPool.SetPrefab(gameObject);
+            ResManager.Intance.PathPool.SetPrefab(gameObject);
         }
     }
 }

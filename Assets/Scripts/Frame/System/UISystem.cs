@@ -22,13 +22,14 @@ namespace CardGameApp
     /// </summary>
     public class UISystem: AbstractSystem, IUISystem
     {
-        public Dictionary<string, GameObject> UI_GameObjectRes { get; set; } = new();
+        public Dictionary<string, GameObject> UI_GameObjectRes { get; set; }
         public Dictionary<string, GameObject> UI_GameObject { get; set; } = new();
         public UIManager UIManager { get; set; }
         public PanelManager PanelManager { get; set; }
 
         protected override void OnInit()
         {
+            UI_GameObjectRes = ResManager.Intance.UI_GameObjectRes;
             UIManager = new UIManager(UI_GameObjectRes, UI_GameObject);
             PanelManager = new PanelManager();
         }

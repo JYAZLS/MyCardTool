@@ -35,12 +35,9 @@ namespace CardGameApp
             //设置默认值
             UI_Panel.InputFields["InputField"].text = "2";
             //获取数据
-            IGameSystem GameSystem = this.GetSystem<IGameSystem>();
-            if (GameSystem.MapInfoStatus)
-            {
-                List<string> map_options = GameSystem.MapBaseInfo.Keys.ToList<string>();
-                UI_Panel.LoadDropDownOption(UI_Panel.DropDowns["Dropdown"], map_options);//地图选项
-            }
+            List<string> map_options = ResManager.Intance.MapBaseInfo.Keys.ToList<string>();
+            UI_Panel.LoadDropDownOption(UI_Panel.DropDowns["Dropdown"], map_options);//地图选项
+
             UI_Panel.StartGameOnClickCallBack += () =>
             {
                 int playercount = (int)float.Parse(UI_Panel.InputFields["InputField"].text);//队伍数量

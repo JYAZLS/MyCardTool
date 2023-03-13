@@ -13,7 +13,6 @@ namespace CardGameApp
 
             RegisterModel<IGameModel>(new GameModel());
 
-            RegisterSystem<IGameSystem>(new GameSystem());
             RegisterSystem<IMapSystem>(new MapSystem());
             RegisterSystem<IUISystem>(new UISystem());
             RegisterSystem<IBattleSystem>(new BattleSystem());

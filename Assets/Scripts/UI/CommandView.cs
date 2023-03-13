@@ -39,10 +39,10 @@ namespace CardGameApp
 
         public void GenerateButtonList(Transform parent,string[] command)
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
+            ButtonPool buttonPool =  ResManager.Intance.ButtonPool; 
             foreach(var it in command)
             {
-                Button button = gameSystem.ButtonPool.Get();
+                Button button = buttonPool.Get();
                 TextMeshProUGUI textMeshPro = button.GetComponentInChildren<TextMeshProUGUI>();
                 textMeshPro.text = it;
                 button.transform.SetParent(parent);
@@ -55,12 +55,13 @@ namespace CardGameApp
 
         public void ClearButtonList()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
+            GameObject ButtonPoolMgr = ResManager.Intance.ButtonPoolMgr;
+            ButtonPool buttonPool =  ResManager.Intance.ButtonPool; 
             foreach(var it in buttonlist)
             {
                 it.onClick.RemoveAllListeners();
-                it.transform.SetParent(gameSystem.ButtonPoolMgr.transform);
-                gameSystem.ButtonPool.Release(it);
+                it.transform.SetParent(ButtonPoolMgr.transform);
+                buttonPool.Release(it);
             }
             buttonlist.Clear();
         }

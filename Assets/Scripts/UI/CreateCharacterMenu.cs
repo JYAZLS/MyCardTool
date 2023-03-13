@@ -15,7 +15,9 @@ namespace CardGameApp
         private Button[] Buttons;
         public override void OnEnter()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
+            Dictionary<string, CharacterPool> CharacterPlayerPool = ResManager.Intance.CharacterPlayerPool;
+            ButtonPool buttonPool =  ResManager.Intance.ButtonPool;
+
             ScrollRect[] scrollRects = UnityEngine.Object.FindObjectsOfType<ScrollRect>();
             foreach (ScrollRect rect in scrollRects)
             {
@@ -23,9 +25,9 @@ namespace CardGameApp
                 ScrollViews.Add(rect.name, group);
             }
 
-            foreach (var it in gameSystem.CharacterPlayerPool.Keys)
+            foreach (var it in CharacterPlayerPool.Keys)
             {
-                Button button = gameSystem.ButtonPool.Get();
+                Button button = buttonPool.Get();
                 button.GetComponentInChildren<TextMeshProUGUI>().text = it;
                 button.name = it;
                 button.transform.SetParent(ScrollViews["CharacterScrollView"].transform);
@@ -49,11 +51,12 @@ namespace CardGameApp
 
         public override void OnDestroy()
         {
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
+            GameObject ButtonPoolMgr = ResManager.Intance.ButtonPoolMgr;
+            ButtonPool buttonPool =  ResManager.Intance.ButtonPool;
             foreach(var it in Buttons)
             {
-                it.gameObject.transform.SetParent(gameSystem.ButtonPoolMgr.transform);
-                gameSystem.ButtonPool.Release(it);
+                it.gameObject.transform.SetParent(ButtonPoolMgr.transform);
+                buttonPool.Release(it);
             }
             base.OnDestroy();
         }

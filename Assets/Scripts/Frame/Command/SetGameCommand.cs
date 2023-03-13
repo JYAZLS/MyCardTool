@@ -18,20 +18,20 @@ namespace CardGameApp
         }
         protected override void OnExecute()
         {
+            Dictionary<string, MapInfo> MapBaseInfo = ResManager.Intance.MapBaseInfo;
             IGameModel mModel = this.GetModel<IGameModel>();
-            IGameSystem gameSystem = this.GetSystem<IGameSystem>();
             IMapSystem mapSystem = this.GetSystem<IMapSystem>();
             IBattleSystem battleSystem = this.GetSystem<IBattleSystem>();
             if (_PlayerCount <2) _PlayerCount = 2;
             else if(_PlayerCount>9) _PlayerCount= 9;
             mModel.playerInfo.PlayerTeamNumber = _PlayerCount;//队伍数量
             mModel.mapInfo.Name = _MapName;//地图名
-            ResLoader resLoader = ResLoader.Allocate();
+            ResLoader resLoader = ResManager.Intance.mResLoader;
             var mapprefab = resLoader.LoadSync<GameObject>("map",mModel.mapInfo.Name);
             GameObject Grid = mapprefab.Instantiate();
             Grid.name = mModel.mapInfo.Name;
-            mModel.mapInfo.WidthLen = gameSystem.MapBaseInfo[mModel.mapInfo.Name].WidthLen;
-            mModel.mapInfo.HeightLen = gameSystem.MapBaseInfo[mModel.mapInfo.Name].HeightLen;
+            mModel.mapInfo.WidthLen = MapBaseInfo[mModel.mapInfo.Name].WidthLen;
+            mModel.mapInfo.HeightLen = MapBaseInfo[mModel.mapInfo.Name].HeightLen;
 
             mapSystem.Tilemaps = Grid.GetComponentInChildren<Tilemap>();
 
@@ -43,8 +43,8 @@ namespace CardGameApp
             // Debug.Log(mapSystem.TileInfo[1].Name);
             // Debug.Log(mapSystem.TileInfo[1].GridType);
             // Debug.Log(mapSystem.TileInfo[1].Colider);
-            resLoader.Recycle2Cache();
-            resLoader = null;
+            // resLoader.Recycle2Cache();
+            // resLoader = null;
         }
 
         public void ReadMapInfo(string JsonStream)

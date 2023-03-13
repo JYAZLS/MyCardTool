@@ -12,9 +12,9 @@ namespace CardGameApp
 
         GameObject ICharacter.mGameObject => this.gameObject;
 
-        CharacterAttr ICharacter.CharacterAttr => CharacterInfo.characterAttr;
+        CharacterAttr ICharacter.CharacterAttr => CharacterInfo.CharacterAttr;
 
-        Military ICharacter.Military => CharacterInfo.military;
+        Military ICharacter.Military => CharacterInfo.Military;
 
         // Start is called before the first frame update
         public void SetTeam(int Team)
@@ -25,7 +25,7 @@ namespace CardGameApp
         public string[] GetCommandBaseList()
         {
             string[] commandlist = null;
-            if(CharacterInfo.characterAttr.Name == CharacterInfo.military.MilitaryName)
+            if(CharacterInfo.CharacterAttr.Name == CharacterInfo.Military.MilitaryName)
             {
                 commandlist= new string[]{
                     "Delete",

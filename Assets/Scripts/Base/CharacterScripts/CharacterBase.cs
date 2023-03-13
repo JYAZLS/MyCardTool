@@ -14,12 +14,12 @@ namespace CardGameApp
         public void SetTeam(int Team);
         public string[] GetCommandBaseList();
     }
-    public abstract class CharacterBase
+    public class CharacterBase: MonoBehaviour
     {
         public int Team {get; set;}
         public GameObject mGameObject { get; set; }
-        public CharacterAttr characterAttr{  get; set; } = new();
-        public Military military { get; set; }= new();
+        public CharacterAttr CharacterAttr{  get; set; } = new();
+        public Military Military { get; set; }= new();
 
     }
 }

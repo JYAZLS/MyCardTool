@@ -17,6 +17,7 @@ namespace CardGameApp
         public void ShowMoveRange(Transform transform, int moveRange, string Militrary, int Team);
         public void ShowMovePath(Vector3 FromVec3,Vector3 ToVec3);
         public void ClearMoveRange();
+        public void CheckColider();
     }
     public class MapSystem : AbstractSystem, IMapSystem
     {
@@ -26,7 +27,6 @@ namespace CardGameApp
         private float mapScaleMax = 2f;
         private float mapScaleMin = 1f;
         private IGameModel mModel;
-        private IGameSystem mSystem;
         public Tilemap Tilemaps { get; set; }
         public UnityEngine.Vector3 CursorVecter { get; set; }
         public List<GridInfo> TileInfo { get; set; }= new(); 
@@ -34,6 +34,8 @@ namespace CardGameApp
         //private  List<SpriteRenderer> OpenList = new List<SpriteRenderer>();
         private  Dictionary<int,SpriteRenderer> OpenList = new();
         private  List<int> PathList = new();
+        private PathPool PathPool;
+        private GameObject PathPoolMgr; 
         int WidthLen {
             get{ return mModel.mapInfo.WidthLen; }
         }
@@ -43,7 +45,8 @@ namespace CardGameApp
         protected override void OnInit()
         {
             mModel = this.GetModel<IGameModel>();
-            mSystem = this.GetSystem<IGameSystem>();
+            PathPool = ResManager.Intance.PathPool;
+            PathPoolMgr = ResManager.Intance.PathPoolMgr;
         }
         /// <summary>
         /// 控制缩放和地图移动
@@ -175,14 +178,15 @@ namespace CardGameApp
         /// <param name="Team"></param>
         public void ShowMoveRange(Transform transform, int moveRange, string Militrary, int Team)
         {
+            PathPool PathPool = ResManager.Intance.PathPool;
             //Debug.Log("Cell:"+CellPosition);
             Vector3Int TileVec3 = Cell2Tile(CellPosition);
             int index = TileVec3.y * WidthLen + TileVec3.x;
-            SpriteRenderer render =  mSystem.PathPool.Get();
+            SpriteRenderer render =  PathPool.Get();
             render.color = Color.green;
             render.transform.position = new Vector3(transform.position.x,transform.position.y,0);
             OpenList.Add(index,render);//添加本身地图块
-            Debug.Log(moveRange);
+            //Debug.Log(moveRange);
             //Debug.Log("Tile:"+TileVec3);
             findCanWalkTileUp(TileVec3, moveRange, Militrary, Team);
             findCanWalkTileRight(TileVec3, moveRange, Militrary, Team);
@@ -234,8 +238,8 @@ namespace CardGameApp
             {
                 if(!OpenList.ContainsKey(index))
                 {
-                    SpriteRenderer render =  mSystem.PathPool.Get();
-                    render.gameObject.transform.SetParent(mSystem.PathPoolMgr.transform);
+                    SpriteRenderer render =  PathPool.Get();
+                    render.gameObject.transform.SetParent(PathPoolMgr.transform);
                     Vector3 vec = Tile2World(currentvector);
                     render.color = Color.green;
                     render.transform.position = new Vector3(vec.x,vec.y,0);
@@ -268,13 +272,13 @@ namespace CardGameApp
             }
 
             int index = currentvector.y * WidthLen + currentvector.x;
-            Debug.Log("down:"+index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
+            //Debug.Log("down:"+index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
             if (TileInfo[index].ColiderBox == false)//没有阻挡且OpenList没有包含在内
             {
                 if(!OpenList.ContainsKey(index))
                 {
-                    SpriteRenderer render =  mSystem.PathPool.Get();
-                    render.gameObject.transform.SetParent(mSystem.PathPoolMgr.transform);
+                    SpriteRenderer render =  PathPool.Get();
+                    render.gameObject.transform.SetParent(PathPoolMgr.transform);
                     Vector3 vec = Tile2World(currentvector);
                     render.color = Color.green;
                     render.transform.position = new Vector3(vec.x,vec.y,0);
@@ -305,13 +309,13 @@ namespace CardGameApp
                 return;
             }
             int index = currentvector.y * WidthLen + currentvector.x;
-            Debug.Log(index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
+            //Debug.Log(index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
             if (TileInfo[index].ColiderBox == false)//没有阻挡且OpenList没有包含在内
             {
                 if(!OpenList.ContainsKey(index))
                 {
-                    SpriteRenderer render =  mSystem.PathPool.Get();
-                    render.gameObject.transform.SetParent(mSystem.PathPoolMgr.transform);
+                    SpriteRenderer render =  PathPool.Get();
+                    render.gameObject.transform.SetParent(PathPoolMgr.transform);
                     Vector3 vec = Tile2World(currentvector);
                     render.color = Color.green;
                     render.transform.position = new Vector3(vec.x,vec.y,0);
@@ -344,13 +348,13 @@ namespace CardGameApp
                 return;
             }
             int index = currentvector.y * WidthLen + currentvector.x;
-            Debug.Log(index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
+            //Debug.Log(index+ " " + TileInfo[index].ColiderBox + " "+ TileInfo[index].GridType);
             if (TileInfo[index].ColiderBox == false)//没有阻挡且OpenList没有包含在内
             {
                 if(!OpenList.ContainsKey(index))
                 {
-                    SpriteRenderer render =  mSystem.PathPool.Get();
-                    render.gameObject.transform.SetParent(mSystem.PathPoolMgr.transform);
+                    SpriteRenderer render =  PathPool.Get();
+                    render.gameObject.transform.SetParent(PathPoolMgr.transform);
                     Vector3 vec = Tile2World(currentvector);
                     render.color = Color.green;
                     render.transform.position = new Vector3(vec.x,vec.y,0);
@@ -574,7 +578,7 @@ namespace CardGameApp
         {
             foreach(var it in OpenList.Values)
             {
-                mSystem.PathPool.Release(it);          
+                PathPool.Release(it);          
             }
             PathList.Clear();
             OpenList.Clear();
