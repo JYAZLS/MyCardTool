@@ -16,7 +16,6 @@ namespace CardGameApp
         private CommandView UI_CommandView;
         private IUISystem UISystem;
         private IMapSystem MapSystem;
-        private IGameSystem GameSystem;
         private IBattleSystem BattleSystem;
         private bool SettingMode = false;
         private ICharacter PtrCharacter = null;
@@ -36,7 +35,6 @@ namespace CardGameApp
 
             UISystem = this.GetSystem<IUISystem>();//获取UI系统
             MapSystem = this.GetSystem<IMapSystem>();//地图系统
-            GameSystem = this.GetSystem<IGameSystem>();//游戏基础数据
             BattleSystem = this.GetSystem<IBattleSystem>();//人物系统
             UISystem.CreatePanel("ControlMenuPanel", UI_ControlMenu);
             UISystem.CreatePanel("CreateCharacterMenu", UI_CreateCharacterMenu);
@@ -76,66 +74,122 @@ namespace CardGameApp
 
         public override void StateUpdate()
         {
-            
             MapSystem.Updated();
-            ICharacter battle  = null;
-            //画布判断，避免多层点击
-            if(UISystem.GetCurrentPanelName() != "CreateCharacterMenu")
+            MapSystem.CheckColider();
+            ICharacter CurrentUnit = BattleSystem.GetCharacter(MapSystem.CursorVecter);
+            switch(ProcessManager.Status)
             {
-                battle = null;
-            }
-            else
-            {
-                battle =  BattleSystem.GetCharacter(MapSystem.CursorVecter);
-            }
-            if(PtrCharacter != null)
-            {
-                MapSystem.ShowMovePath(PtrCharacter.mGameObject.transform.position,MapSystem.CursorVecter);
-            }
-            if (SettingMode)
-            {
-                if (BattleSystem.ChooseCharacter!=null)
-                {
-                    BattleSystem.DragCharacter(MapSystem.CursorVecter);
-
-                    if (Input.GetMouseButtonDown(0))//左键点击
+                case ProcessStatus.None:
+                    if(Input.GetMouseButtonDown(0))
                     {
-                        BattleSystem.PlaceCharacter();
-                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
-                    }
-                    if (Input.GetMouseButtonDown(1))//右键点击
-                    {
-                        BattleSystem.ReleaseCharacter();
-                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
-                    }
-                }
-                else
-                {
-                    if (Input.GetMouseButtonDown(0))//左键点击
-                    {
-                        if(battle != null)
+                        if((PtrCharacter == null) && (CurrentUnit != null))
                         {
-                            PtrCharacter = battle;
-                            MapSystem.ShowMoveRange(PtrCharacter.mGameObject.transform,4,PtrCharacter.Military.MilitaryName,PtrCharacter.Team);
-                            // UISystem.PushPanel("CommandMenu",UI_CommandView);
-                            // UI_CommandView.InputFieldViews["NameInput"].text = battle.CharacterAttr.Name;
-                            // UI_CommandView.InputFieldViews["HPInputField"].text = battle.CharacterAttr.Hp.ToString() +"/" + battle.CharacterAttr.CurrentHp.ToString(); 
-                            // UI_CommandView.InputFieldViews["TeamInputField"].text = battle.Team.ToString();
-                            // UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,PtrCharacter.GetCommandBaseList());
+                            PtrCharacter = CurrentUnit;
+                            if(SettingMode)
+                            {
+                                ProcessManager.Status = ProcessStatus.Command;
+                                if(SettingMode)
+                                {
+                                    UISystem.PopPanel();
+                                }
+                                //指令栏
+                                this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
+                                
+                            }
                         }
                     }
-                    if (Input.GetMouseButtonDown(1))//右键点击
+                    
+                    break;
+                case ProcessStatus.SetCharacter:
+                    BattleSystem.DragCharacter(BattleSystem.Hero,MapSystem.CursorVecter);
+                    if(Input.GetMouseButtonDown(0))
                     {
-                        PtrCharacter = null;
-                        MapSystem.ClearMoveRange();
-                        //UISystem.PushPanel("EndMenu",UI_EndMenu);
+                        BattleSystem.PlaceCharacter(BattleSystem.Hero);
+                        BattleSystem.Hero = null;
+                        ProcessManager.Status = ProcessStatus.None;
+                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
                     }
-                }   
+                    else if(Input.GetMouseButtonDown(1))
+                    {
+                        BattleSystem.ReleaseCharacter(BattleSystem.Hero);
+                        BattleSystem.Hero = null;
+                        ProcessManager.Status = ProcessStatus.None;
+                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    }
+                    break;
+                case ProcessStatus.Move:
+                    break;
+                case ProcessStatus.Command:
+                    break;
+                case ProcessStatus.End:
+                    break;
             }
-            else
-            { 
-            }
+
         }
+
+
+        // public override void StateUpdate()
+        // {
+            
+        //     MapSystem.Updated();
+        //     MapSystem.CheckColider();
+        //     ICharacter battle  = null;
+        //     //画布判断，避免多层点击
+        //     if(UISystem.GetCurrentPanelName() != "CreateCharacterMenu")
+        //     {
+        //         battle = null;
+        //     }
+        //     else
+        //     {
+        //         battle =  BattleSystem.GetCharacter(MapSystem.CursorVecter);
+        //     }
+        //     if(PtrCharacter != null)
+        //     {
+        //         MapSystem.ShowMovePath(PtrCharacter.mGameObject.transform.position,MapSystem.CursorVecter);
+        //     }
+        //     if (SettingMode)
+        //     {
+        //         if (BattleSystem.ChooseCharacter!=null)
+        //         {
+        //             BattleSystem.DragCharacter(MapSystem.CursorVecter);
+
+        //             if (Input.GetMouseButtonDown(0))//左键点击
+        //             {
+        //                 BattleSystem.PlaceCharacter();
+        //                 UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+        //             }
+        //             if (Input.GetMouseButtonDown(1))//右键点击
+        //             {
+        //                 BattleSystem.ReleaseCharacter();
+        //                 UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             if (Input.GetMouseButtonDown(0))//左键点击
+        //             {
+        //                 if(battle != null)
+        //                 {
+        //                     PtrCharacter = battle;
+        //                     UISystem.PushPanel("CommandMenu",UI_CommandView);
+        //                     UI_CommandView.InputFieldViews["NameInput"].text = battle.CharacterAttr.Name;
+        //                     UI_CommandView.InputFieldViews["HPInputField"].text = battle.CharacterAttr.Hp.ToString() +"/" + battle.CharacterAttr.CurrentHp.ToString(); 
+        //                     UI_CommandView.InputFieldViews["TeamInputField"].text = battle.Team.ToString();
+        //                     UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,PtrCharacter.GetCommandBaseList());
+        //                 }
+        //             }
+        //             if (Input.GetMouseButtonDown(1))//右键点击
+        //             {
+        //                 PtrCharacter = null;
+        //                 //MapSystem.ClearMoveRange();
+        //                 //UISystem.PushPanel("EndMenu",UI_EndMenu);
+        //             }
+        //         }   
+        //     }
+        //     else
+        //     { 
+        //     }
+        // }
         public override void StateEnd()
         {
 
@@ -150,6 +204,7 @@ namespace CardGameApp
             else
             {
                 this.SendCommand(new CreateCharacterCommand(button));
+                ProcessManager.Status = ProcessStatus.SetCharacter; 
             }
         }
         
@@ -177,7 +232,9 @@ namespace CardGameApp
                 if(cmd == "Cancel")
                 {
                     UI_CommandView.ClearButtonList();
-                    UISystem.PopPanel();   
+                    UISystem.PopPanel();
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    ProcessManager.Status = ProcessStatus.None;   
                 }
                 else if(cmd == "Delete")
                 {
@@ -185,19 +242,33 @@ namespace CardGameApp
                     PtrCharacter = null;
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    ProcessManager.Status = ProcessStatus.None;
+
                 }
                 else if(cmd == "ChangeType")
                 {
+                    Debug.Log("TEST");
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
-                    //CommandRoot.Add("ChangeType");
-                    //UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,);
+                    CommandRoot.Add("ChangeType");
+                    UISystem.PushPanel("CommandMenu",UI_CommandView);
+                    UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,PtrCharacter.GetTypeCommandList());
+                    
                 }
                 else if(cmd == "Wait")
                 {
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    ProcessManager.Status = ProcessStatus.None;
                 }
+            }
+            else if(CommandRoot[0] == "ChangeType")
+            {
+                this.SendCommand(new ChangeHeroType(PtrCharacter,cmd));
+                CommandRoot.Clear();
+                UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
             }
             
         }

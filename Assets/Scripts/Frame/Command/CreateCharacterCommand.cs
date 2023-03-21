@@ -19,7 +19,7 @@ namespace CardGameApp
             IUISystem UISystem = this.GetSystem<IUISystem>();
             //gameSystem.CharacterPlayerPool[Name].Get();
             ICharacter gameobject = CreateCharacter(CharacterName);
-            battleSystem.SetChooseCharacter(gameobject);
+            battleSystem.Hero = gameobject;
             UISystem.PopPanel();
         }
 

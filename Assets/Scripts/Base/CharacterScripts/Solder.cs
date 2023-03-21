@@ -14,7 +14,7 @@ namespace CardGameApp
             this.Team = Team;
         }
 
-        public string[] GetCommandBaseList()
+        public override string[] GetCommandBaseList()
         {
             string[] commandlist = null;
             commandlist= new string[]{

@@ -13,6 +13,7 @@ namespace CardGameApp
         public Military Military { get;  }
         public void SetTeam(int Team);
         public string[] GetCommandBaseList();
+        public string[] GetTypeCommandList();
     }
     public class CharacterBase: MonoBehaviour
     {
@@ -20,6 +21,34 @@ namespace CardGameApp
         public GameObject mGameObject { get; set; }
         public CharacterAttr CharacterAttr{  get; set; } = new();
         public Military Military { get; set; }= new();
+
+        public virtual string[] GetCommandBaseList()
+        {
+            string[] commandlist= new string[]{
+                "ChangeType",
+                "Delete",
+                "Cancel",
+                "Wait"};
+                return commandlist;
+        }
+
+        public virtual string[] GetTypeCommandList()
+        {
+            string[] commandlist= new string[]{
+                "шる條", 
+                "ш祭條", 
+                "輪怹條", 
+                "僮條",   
+                "殢條",   
+                "殢る條",  
+                "僮る條", 
+                "笭祭條", 
+                "笭る條", 
+                "聒崞芛醴",
+                "覺尪"
+            };
+            return commandlist;
+        }
 
     }
 }

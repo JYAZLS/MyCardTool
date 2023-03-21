@@ -8,12 +8,10 @@ namespace CardGameApp
 {
     public interface IBattleSystem : ISystem
     {
-        public ICharacter ChooseCharacter { get; }
-        public void SetChooseCharacter(ICharacter _object);
-        public void ClearChooseCharacter();
-        public void DragCharacter(Vector3 vector3);
-        public void PlaceCharacter();
-        public void ReleaseCharacter();
+        public ICharacter Hero { get; set;}
+        public void DragCharacter(ICharacter hero,Vector3 vector3);
+        public void PlaceCharacter(ICharacter hero);
+        public void ReleaseCharacter(ICharacter hero);
         public void DeleteCharacter(ICharacter _object);
         public int TeamTotalNum { get;}
         public BindableProperty<int> TeamNum {get;}
@@ -31,60 +29,44 @@ namespace CardGameApp
         public BindableProperty<int> TeamNum {get;set;} = new BindableProperty<int>(0);
         public BindableProperty<int> RoundNum {get;set;}= new BindableProperty<int>(0);
         public List<List<ICharacter>> mBattleUnit {get;set;} = new List<List<ICharacter>>();
-        public ICharacter ChooseCharacter { get; set; }
+        public ICharacter Hero { get; set; }
         
         protected override void OnInit()
         {
             mModel = this.GetModel<IGameModel>();          
-            ChooseCharacter = null;
+            Hero = null;
         }
-        /// <summary>
-        /// 设置选择的人物
-        /// </summary>
-        /// <param name="_object"></param>
-        public void SetChooseCharacter(ICharacter _object)
-        {
-            ChooseCharacter = _object;
-        }
-        /// <summary>
-        /// 清空选择
-        /// </summary>
-        public void ClearChooseCharacter()
-        {
-            ChooseCharacter = null;
-        }
+
         /// <summary>
         /// 拖拽人物
         /// </summary>
         /// <param name="vector3"></param>
-        public void DragCharacter(Vector3 vector3)
+        public void DragCharacter(ICharacter hero,Vector3 vector3)
         {
-            ChooseCharacter.mGameObject.transform.position = new Vector3(vector3.x + 0.24f, vector3.y + 0.24f, 0);
+            hero.mGameObject.transform.position = new Vector3(vector3.x + 0.24f, vector3.y + 0.24f, 0);
         }
         /// <summary>
         /// 放置人物
         /// </summary>
-        public void PlaceCharacter()
+        public void PlaceCharacter(ICharacter hero)
         {
             if (mBattleUnit.Count < TeamNum + 1)
             {
                 mBattleUnit.Add(new List<ICharacter>());
-                mBattleUnit[TeamNum].Add(ChooseCharacter);
+                mBattleUnit[TeamNum].Add(hero);
             }
             else
             {
-                mBattleUnit[TeamNum].Add(ChooseCharacter);
+                mBattleUnit[TeamNum].Add(hero);
             }
-            ChooseCharacter.SetTeam(TeamNum);
-            ChooseCharacter = null;
+            hero.SetTeam(TeamNum);
         }
-        public void ReleaseCharacter()
+        public void ReleaseCharacter(ICharacter hero)
         {
-            if (ChooseCharacter != null)
+            if (hero != null)
             {
                 Dictionary<string, CharacterPool> CharacterPlayerPool = ResManager.Intance.CharacterPlayerPool;
-                CharacterPlayerPool[ChooseCharacter.CharacterAttr.baseName].Release(ChooseCharacter.mGameObject);
-                ChooseCharacter = null;
+                CharacterPlayerPool[hero.CharacterAttr.baseName].Release(hero.mGameObject);
             }    
         }
 

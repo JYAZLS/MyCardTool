@@ -14,17 +14,6 @@ namespace CardGameApp
         {
             this.Team = Team;
         }
-
-        public string[] GetCommandBaseList()
-        {
-            string[] commandlist = null;
-            commandlist= new string[]{
-                "ChangeType",
-                "Delete",
-                "Cancel",
-                "Wait"};
-                return commandlist;
-        }
     }
 }
 
