@@ -13,6 +13,7 @@ namespace CardGameApp
         public Tilemap Tilemaps { get; set; }
         public UnityEngine.Vector3 CursorVecter { get; set; }
         public List<GridInfo> TileInfo { get; set;}
+        public GridInfo CurrentTile {get; set;}
         public void Updated();
         public void ShowMoveRange(Transform transform, int moveRange, string Militrary, int Team);
         public void ShowMovePath(Vector3 FromVec3,Vector3 ToVec3);
@@ -36,6 +37,7 @@ namespace CardGameApp
         private  List<int> PathList = new();
         private PathPool PathPool;
         private GameObject PathPoolMgr; 
+        public GridInfo CurrentTile {get; set;}
         int WidthLen {
             get{ return mModel.mapInfo.WidthLen; }
         }
@@ -113,6 +115,10 @@ namespace CardGameApp
             }
             CellPosition = World2Cell(worldpos);
             CursorVecter = Tilemaps.CellToWorld(CellPosition);
+            Vector3Int tilevector = World2Tile(worldpos);
+            int index = tilevector.y * WidthLen + tilevector.x;
+            CurrentTile = TileInfo[index];
+            //Debug.Log(index);
         }
         public int ConvertWorldToTile(float value)
         {
@@ -152,7 +158,7 @@ namespace CardGameApp
         {
             Vector3Int vector3 = Vector3Int.zero;
             vector3.x = _vector.x - WidthLen/2;
-            vector3.y = _vector.y - HeightLen/2 - 1;
+            vector3.y = -_vector.y + HeightLen/2 - 1;
             return vector3;
         }
         public Vector3Int World2Cell(Vector3 _vector)
@@ -196,15 +202,16 @@ namespace CardGameApp
         
         public void CheckColider()
         {
-            for(int i = -HeightLen/2 ; i< HeightLen/2; i++)
+            for(int i = 0;i<HeightLen;i++)
             {
-                for(int j = -WidthLen/2; j < WidthLen/2; j++)
+                for(int j = 0; j < WidthLen; j++)
                 {
-                    int column = WidthLen/2 + j;
-                    int row =  HeightLen/2 +  i;
-                    int index = row * WidthLen + column;
-                    Vector3 tiletrans = Tilemaps.CellToWorld(new Vector3Int(i,j));
-                    Collider2D collider = Physics2D.OverlapBox(tiletrans, new Vector2(0.1f, 0.1f), 0, 1 << 3);
+                    Vector3Int Cell = Tile2Cell(new Vector3Int(j, i, 0));
+                    int index = i * WidthLen + j;
+                    Vector3 Celltrans = Tilemaps.CellToWorld(Cell);
+                    Celltrans.x += 0.24f;
+                    Celltrans.y += 0.24f;
+                    Collider2D collider = Physics2D.OverlapBox(Celltrans, new Vector2(0.1f, 0.1f), 0, 1 << 3);
                     if(TileInfo[index].GridType == (int)TileType.WALL)
                     {
                         continue;

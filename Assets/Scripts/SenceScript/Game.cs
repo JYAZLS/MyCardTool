@@ -98,12 +98,19 @@ namespace CardGameApp
                             }
                         }
                     }
+                    else if(Input.GetMouseButtonDown(1))
+                    {
+                        UISystem.PopPanel();
+                        UISystem.PushPanel("EndMenu",UI_EndMenu);
+                    }
                     
                     break;
                 case ProcessStatus.SetCharacter:
                     BattleSystem.DragCharacter(BattleSystem.Hero,MapSystem.CursorVecter);
-                    if(Input.GetMouseButtonDown(0))
+                    //Debug.Log(MapSystem.CurrentTile.ColiderBox);
+                    if(Input.GetMouseButtonDown(0) && !MapSystem.CurrentTile.ColiderBox)
                     {
+                        
                         BattleSystem.PlaceCharacter(BattleSystem.Hero);
                         BattleSystem.Hero = null;
                         ProcessManager.Status = ProcessStatus.None;
@@ -216,13 +223,13 @@ namespace CardGameApp
             }
             else if(button == "Cancel")
             {
-
             }
             else
             {
 
             }
             UISystem.PopPanel();
+            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
         }
 
         private void CommandClickHandle(string cmd)
@@ -234,7 +241,8 @@ namespace CardGameApp
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
                     UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
-                    ProcessManager.Status = ProcessStatus.None;   
+                    ProcessManager.Status = ProcessStatus.None;
+                    PtrCharacter = null;   
                 }
                 else if(cmd == "Delete")
                 {
@@ -244,11 +252,11 @@ namespace CardGameApp
                     UISystem.PopPanel();
                     UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
                     ProcessManager.Status = ProcessStatus.None;
+                    PtrCharacter = null;
 
                 }
                 else if(cmd == "ChangeType")
                 {
-                    Debug.Log("TEST");
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
                     CommandRoot.Add("ChangeType");
@@ -262,13 +270,17 @@ namespace CardGameApp
                     UISystem.PopPanel();
                     UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
                     ProcessManager.Status = ProcessStatus.None;
+                    PtrCharacter = null;
                 }
             }
             else if(CommandRoot[0] == "ChangeType")
             {
                 this.SendCommand(new ChangeHeroType(PtrCharacter,cmd));
                 CommandRoot.Clear();
-                UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                UISystem.PopPanel();
+                UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);               
+                ProcessManager.Status = ProcessStatus.None;
+                PtrCharacter = null;
             }
             
         }

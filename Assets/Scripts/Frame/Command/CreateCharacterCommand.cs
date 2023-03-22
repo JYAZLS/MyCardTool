@@ -65,6 +65,8 @@ namespace CardGameApp
             {
                 character = Character.GetComponent<ICharacter>();
             }
+            Collider2D colliderbox = character.mGameObject.GetComponent<Collider2D>();
+            colliderbox.Disable();
             return character;
         }
     }

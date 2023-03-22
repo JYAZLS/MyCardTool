@@ -21,6 +21,7 @@ namespace CardGameApp
             Panel.InputFieldViews["NameInput"].text = Character.CharacterAttr.Name;
             Panel.InputFieldViews["HPInputField"].text = Character.CharacterAttr.Hp.ToString() +"/" + Character.CharacterAttr.CurrentHp.ToString(); 
             Panel.InputFieldViews["TeamInputField"].text = Character.Team.ToString();
+            Panel.ClearButtonList();
             Panel.GenerateButtonList(Panel.ScrollViews["CommandScroll"].transform,Character.GetCommandBaseList());
         }
     }

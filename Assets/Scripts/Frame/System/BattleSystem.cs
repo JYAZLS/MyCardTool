@@ -60,6 +60,8 @@ namespace CardGameApp
                 mBattleUnit[TeamNum].Add(hero);
             }
             hero.SetTeam(TeamNum);
+            Collider2D colliderbox = hero.mGameObject.GetComponent<Collider2D>();
+            colliderbox.Enable();
         }
         public void ReleaseCharacter(ICharacter hero)
         {
