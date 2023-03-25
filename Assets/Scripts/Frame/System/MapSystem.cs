@@ -424,34 +424,33 @@ namespace CardGameApp
                 openlist.Add(Startindex);
                 PathList.Add(Startindex);
                 //int test = 2;
+                //Debug.Log("Start");
                 while (!CalFlag)
                 {
-                    HnValuePairs.Clear();
-                    FnValuePairs.Clear();
+                    
+                    // HnValuePairs.Clear();
+                    // FnValuePairs.Clear();
                     int CurrentHn = Mathf.Abs(ToTile.y - FromTile.y) + Mathf.Abs(ToTile.x - FromTile.x);
 
                     //4个方向进行判断
                     // TemTile.x = FromTile.x - 1;
                     // TemTile.y = FromTile.y;
-                    TemTile.x -= 1;
+                    TemTile.x = FromTile.x-1;
                     TemTile.y = FromTile.y;
                     
                     Temindex = Fromindex - 1;
+                    //Debug.Log(Temindex);
                     if (TemTile.x  > 0 && !closelist.Contains(Temindex) && !TileInfo[Temindex].ColiderBox && OpenList.ContainsKey(Temindex))
                     {
                         int Hn = Mathf.Abs(ToTile.y - TemTile.y) + Mathf.Abs(ToTile.x - TemTile.x);
                         int Gn = Mathf.Abs(TemTile.y - StartTile.y) + Mathf.Abs(TemTile.x - StartTile.x);
 
-                        HnValuePairs.Add(Temindex, Hn);
-                        FnValuePairs.Add(Temindex, Hn + Gn);
-                        if (Hn < CurrentHn)//小于当前的估计值，加入开列表
+                        //Debug.Log(Temindex+" "+Hn+ " "+CurrentHn);
+                        if (!openlist.Contains(Temindex))
                         {
-                            if (!openlist.Contains(Temindex))
-                                openlist.Add(Temindex);
-                        }
-                        else
-                        {
-                            closelist.Add(Temindex);
+                            openlist.Add(Temindex);
+                            HnValuePairs.Add(Temindex, Hn);
+                            FnValuePairs.Add(Temindex, Hn + Gn);
                         }
                     }
 
@@ -463,16 +462,13 @@ namespace CardGameApp
                         int Hn = Mathf.Abs(ToTile.y - TemTile.y) + Mathf.Abs(ToTile.x - TemTile.x);
                         int Gn = Mathf.Abs(TemTile.y - StartTile.y) + Mathf.Abs(TemTile.x - StartTile.x);
 
-                        HnValuePairs.Add(Temindex, Hn);
-                        FnValuePairs.Add(Temindex, Hn + Gn);
-                        if (Hn < CurrentHn)//小于当前的估计值，加入开列表
+                        
+                        //Debug.Log(Temindex+" "+Hn+ " "+CurrentHn);
+                        if (!openlist.Contains(Temindex))
                         {
-                            if (!openlist.Contains(Temindex))
-                                openlist.Add(Temindex);
-                        }
-                        else
-                        {
-                            closelist.Add(Temindex);
+                            openlist.Add(Temindex);
+                            HnValuePairs.Add(Temindex, Hn);
+                            FnValuePairs.Add(Temindex, Hn + Gn);
                         }
                     }
 
@@ -484,16 +480,12 @@ namespace CardGameApp
                         int Hn = Mathf.Abs(ToTile.y - TemTile.y) + Mathf.Abs(ToTile.x - TemTile.x);
                         int Gn = Mathf.Abs(TemTile.y - StartTile.y) + Mathf.Abs(TemTile.x - StartTile.x);
 
-                        HnValuePairs.Add(Temindex, Hn);
-                        FnValuePairs.Add(Temindex, Hn + Gn);
-                        if (Hn < CurrentHn)//小于当前的估计值，加入开列表
+                        //Debug.Log(Temindex+" "+Hn+ " "+CurrentHn);
+                        if (!openlist.Contains(Temindex))
                         {
-                            if (!openlist.Contains(Temindex))
-                                openlist.Add(Temindex);
-                        }
-                        else
-                        {
-                            closelist.Add(Temindex);
+                            openlist.Add(Temindex);
+                            HnValuePairs.Add(Temindex, Hn);
+                            FnValuePairs.Add(Temindex, Hn + Gn);
                         }
                     }
 
@@ -505,26 +497,27 @@ namespace CardGameApp
                         int Hn = Mathf.Abs(ToTile.y - TemTile.y) + Mathf.Abs(ToTile.x - TemTile.x);
                         int Gn = Mathf.Abs(TemTile.y - StartTile.y) + Mathf.Abs(TemTile.x - StartTile.x);
 
-                        HnValuePairs.Add(Temindex, Hn);
-                        FnValuePairs.Add(Temindex, Hn + Gn);
-                        if (Hn < CurrentHn)//小于当前的估计值，加入开列表
+                        //Debug.Log(Temindex+" "+Hn+ " "+CurrentHn);
+                        if (!openlist.Contains(Temindex))
                         {
-                            if (!openlist.Contains(Temindex))
-                                openlist.Add(Temindex);
-                        }
-                        else
-                        {
-                            closelist.Add(Temindex);
+                            openlist.Add(Temindex);
+                            HnValuePairs.Add(Temindex, Hn);
+                            FnValuePairs.Add(Temindex, Hn + Gn);
                         }
                     }
 
                     openlist.Remove(Fromindex);//移除父节点
+                    HnValuePairs.Remove(Fromindex);
+                    FnValuePairs.Remove(Fromindex);
                     closelist.Add(Fromindex);
 
                     int MinIndex = -1;
                     int MinHn = -1;
+                    //Debug.Log("HnValuePairs:");
                     foreach (var it in HnValuePairs)//找到下个方向中最小估计值
                     {
+                        
+                        //Debug.Log(it.Key + " "+ it.Value);
                         if (MinIndex == -1)
                         {
                             MinIndex = it.Key;
@@ -539,7 +532,7 @@ namespace CardGameApp
                             }
                         }
                     }
-
+                    //Debug.Log("Min:" + MinIndex + " " + MinHn);
                     for (int i = 0; i < openlist.Count; i++)//与开列表中的进行判断，是否有更优的解
                     {
                         int col = openlist.ElementAt(i) % WidthLen;
@@ -549,6 +542,8 @@ namespace CardGameApp
                         {
                             MinIndex = openlist.ElementAt(i);
                             openlist.Remove(MinIndex);
+                            HnValuePairs.Remove(MinIndex);
+                            FnValuePairs.Remove(MinIndex);
                             i--;
                             closelist.Add(MinIndex);
                             break;
