@@ -17,7 +17,6 @@ namespace CardGameApp
         private IUISystem UISystem;
         private IMapSystem MapSystem;
         private IBattleSystem BattleSystem;
-        private bool SettingMode = false;
         private ICharacter PtrCharacter = null;
         private List<string> CommandRoot = new ();
         public Game(SceneController controller): base(controller)
@@ -69,7 +68,7 @@ namespace CardGameApp
                 }
             });
             
-            SettingMode = true;
+            ProcessManager.SettingMode = true;
         }
 
         public override void StateUpdate()
@@ -85,18 +84,20 @@ namespace CardGameApp
                         if((PtrCharacter == null) && (CurrentUnit != null))
                         {
                             PtrCharacter = CurrentUnit;
-                            if(SettingMode)
+                            if(ProcessManager.SettingMode)
                             {
                                 ProcessManager.Status = ProcessStatus.Command;
-                                if(SettingMode)
-                                {
-                                    UISystem.PopPanel();
-                                }
+                                UISystem.PopPanel();
                                 //Ö¸ÁîÀ¸
                                 this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
-                                
+                            }
+                            else
+                            {
+                                MapSystem.ShowMoveRange(PtrCharacter.mGameObject.transform,PtrCharacter.Military.MoveRange,PtrCharacter.Military.MilitaryName,PtrCharacter.Team);
+                                ProcessManager.Status = ProcessStatus.Move;
                             }
                         }
+                        
                     }
                     else if(Input.GetMouseButtonDown(1))
                     {
@@ -114,19 +115,53 @@ namespace CardGameApp
                         BattleSystem.PlaceCharacter(BattleSystem.Hero);
                         BattleSystem.Hero = null;
                         ProcessManager.Status = ProcessStatus.None;
-                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                        if(ProcessManager.SettingMode)
+                        {
+                            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                        }  
                     }
                     else if(Input.GetMouseButtonDown(1))
                     {
                         BattleSystem.ReleaseCharacter(BattleSystem.Hero);
                         BattleSystem.Hero = null;
                         ProcessManager.Status = ProcessStatus.None;
-                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                        if(ProcessManager.SettingMode)
+                        {
+                            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                        }  
                     }
                     break;
                 case ProcessStatus.Move:
+                    MapSystem.ShowMovePath(PtrCharacter.mGameObject.transform.position,MapSystem.CursorVecter);
+                    if(Input.GetMouseButtonDown(0) && !MapSystem.CurrentTile.ColiderBox && MapSystem.isInOpenList(MapSystem.CurrentTile.id)) 
+                    {
+                        List<Vector3> path = new List<Vector3>();
+                        MapSystem.getPathTransform(ref path);
+                        ProcessManager.Status = ProcessStatus.Moving;
+                        ActionManager.Intance.MoveToAction(PtrCharacter.mGameObject.transform,path);
+                    }
+                    else if(Input.GetMouseButtonDown(1))
+                    {
+                        MapSystem.ClearMoveRange();
+                        ProcessManager.Status = ProcessStatus.None;
+                        PtrCharacter = null;
+                    }
+                    break;
+                case ProcessStatus.Moving:
+                    break;
+                case ProcessStatus.MoveEnd:
+                    this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
+                    MapSystem.ClearMoveRange();
+                    ProcessManager.Status = ProcessStatus.Command;
                     break;
                 case ProcessStatus.Command:
+                    if(Input.GetMouseButtonDown(1))
+                    {
+                        UISystem.PopPanel();
+                        PtrCharacter.mGameObject.Position(ActionManager.Intance.LastPosition);
+                        ProcessManager.Status = ProcessStatus.None;
+                        PtrCharacter = null;
+                    }    
                     break;
                 case ProcessStatus.End:
                     break;
@@ -134,79 +169,28 @@ namespace CardGameApp
 
         }
 
-
-        // public override void StateUpdate()
-        // {
-            
-        //     MapSystem.Updated();
-        //     MapSystem.CheckColider();
-        //     ICharacter battle  = null;
-        //     //»­²¼ÅÐ¶Ï£¬±ÜÃâ¶à²ãµã»÷
-        //     if(UISystem.GetCurrentPanelName() != "CreateCharacterMenu")
-        //     {
-        //         battle = null;
-        //     }
-        //     else
-        //     {
-        //         battle =  BattleSystem.GetCharacter(MapSystem.CursorVecter);
-        //     }
-        //     if(PtrCharacter != null)
-        //     {
-        //         MapSystem.ShowMovePath(PtrCharacter.mGameObject.transform.position,MapSystem.CursorVecter);
-        //     }
-        //     if (SettingMode)
-        //     {
-        //         if (BattleSystem.ChooseCharacter!=null)
-        //         {
-        //             BattleSystem.DragCharacter(MapSystem.CursorVecter);
-
-        //             if (Input.GetMouseButtonDown(0))//×ó¼üµã»÷
-        //             {
-        //                 BattleSystem.PlaceCharacter();
-        //                 UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
-        //             }
-        //             if (Input.GetMouseButtonDown(1))//ÓÒ¼üµã»÷
-        //             {
-        //                 BattleSystem.ReleaseCharacter();
-        //                 UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             if (Input.GetMouseButtonDown(0))//×ó¼üµã»÷
-        //             {
-        //                 if(battle != null)
-        //                 {
-        //                     PtrCharacter = battle;
-        //                     UISystem.PushPanel("CommandMenu",UI_CommandView);
-        //                     UI_CommandView.InputFieldViews["NameInput"].text = battle.CharacterAttr.Name;
-        //                     UI_CommandView.InputFieldViews["HPInputField"].text = battle.CharacterAttr.Hp.ToString() +"/" + battle.CharacterAttr.CurrentHp.ToString(); 
-        //                     UI_CommandView.InputFieldViews["TeamInputField"].text = battle.Team.ToString();
-        //                     UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,PtrCharacter.GetCommandBaseList());
-        //                 }
-        //             }
-        //             if (Input.GetMouseButtonDown(1))//ÓÒ¼üµã»÷
-        //             {
-        //                 PtrCharacter = null;
-        //                 //MapSystem.ClearMoveRange();
-        //                 //UISystem.PushPanel("EndMenu",UI_EndMenu);
-        //             }
-        //         }   
-        //     }
-        //     else
-        //     { 
-        //     }
-        // }
         public override void StateEnd()
         {
-
         }
 
         private void CreateCharacterButtonClickHandle(string button)
         {
             if (button == "Edit")
             {
-
+                if(ProcessManager.SettingMode)
+                {
+                    ProcessManager.SettingMode = false;
+                    UISystem.PanelClearAll();
+                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
+                }
+                else
+                {
+                    ProcessManager.SettingMode = true;
+                    UISystem.PanelClearAll();
+                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                }
+                
             }
             else
             {
@@ -220,16 +204,36 @@ namespace CardGameApp
             if(button == "Next")
             {
                 this.SendCommand<TeamChangeCommand>();
+                UISystem.PopPanel();
+                if(ProcessManager.SettingMode)
+                {
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                }
+                else
+                {
+                    Debug.Log("Stop:"+ProcessManager.SettingMode);
+                    UISystem.PanelClearAll();
+                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
+                }
             }
             else if(button == "Cancel")
             {
+                UISystem.PopPanel();
+                if(ProcessManager.SettingMode)
+                {
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                }
             }
             else
             {
-
+                UISystem.PopPanel();
+                if(ProcessManager.SettingMode)
+                {
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                }
             }
-            UISystem.PopPanel();
-            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+            
+            
         }
 
         private void CommandClickHandle(string cmd)
@@ -268,7 +272,10 @@ namespace CardGameApp
                 {
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    if(ProcessManager.SettingMode)
+                    {
+                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    }
                     ProcessManager.Status = ProcessStatus.None;
                     PtrCharacter = null;
                 }
@@ -278,13 +285,15 @@ namespace CardGameApp
                 this.SendCommand(new ChangeHeroType(PtrCharacter,cmd));
                 CommandRoot.Clear();
                 UISystem.PopPanel();
-                UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);               
+                if(ProcessManager.SettingMode)
+                {
+                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                }               
                 ProcessManager.Status = ProcessStatus.None;
                 PtrCharacter = null;
             }
             
-        }
-
+        }     
         public IArchitecture GetArchitecture()
         {
             return GameFrame.Interface;

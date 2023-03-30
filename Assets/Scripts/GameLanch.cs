@@ -11,15 +11,19 @@ namespace CardGameApp
         private void Awake()
         {
             this.gameObject.AddComponent<SceneController>();
-            GameObject ResManager = new GameObject("ResManager");
-            ResManager.AddComponent<ResManager>();           
+            //资源管理器
+            GameObject ResMgr = new GameObject("ResManager");
+            ResMgr.AddComponent<ResManager>();
+            //动作管理器
+            GameObject ActionMgr = new GameObject("ActionManager");
+            ActionMgr.AddComponent<ActionManager>(); 
             GameObject.DontDestroyOnLoad(this.gameObject);
         }
         void Start()
         {
             ActionKit.Delay(0.6f,()=>{
                 SceneController.Intance.SetState(new Menu(SceneController.Intance), "Menu");
-            }).Start(this);             
+            }).Start(ActionManager.Intance);             
         }
         // Update is called once per frame
         void Update()

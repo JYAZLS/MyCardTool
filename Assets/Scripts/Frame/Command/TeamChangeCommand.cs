@@ -14,6 +14,7 @@ namespace CardGameApp
             battleSystem.TeamNum.Value++;
             if(battleSystem.TeamNum.Value >= battleSystem.TeamTotalNum)
             {
+                ProcessManager.SettingMode = false;
                 battleSystem.TeamNum.Value = 0;
             }            
         }

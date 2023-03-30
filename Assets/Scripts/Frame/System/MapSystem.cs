@@ -19,6 +19,8 @@ namespace CardGameApp
         public void ShowMovePath(Vector3 FromVec3,Vector3 ToVec3);
         public void ClearMoveRange();
         public void CheckColider();
+        public void getPathTransform(ref List<Vector3> path);
+        public bool isInOpenList(int index);
     }
     public class MapSystem : AbstractSystem, IMapSystem
     {
@@ -585,6 +587,26 @@ namespace CardGameApp
             PathList.Clear();
             OpenList.Clear();
             
+        }
+        /// <summary>
+        /// 获取路径各个节点
+        /// </summary>
+        /// <param name="path"></param>
+        public void getPathTransform(ref List<Vector3> path)
+        {
+            foreach (var it in PathList)
+            {
+                Vector3Int Tile = Vector3Int.zero;
+                Tile.x = it % WidthLen;
+                Tile.y = it / WidthLen;
+                
+                path.Add(Tile2World(Tile));
+            }
+        }
+
+        public bool isInOpenList(int index)
+        {
+            return OpenList.ContainsKey(index);
         }
     }   
 
