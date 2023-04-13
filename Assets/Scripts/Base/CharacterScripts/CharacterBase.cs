@@ -11,6 +11,7 @@ namespace CardGameApp
         public GameObject mGameObject { get; }
         public CharacterAttr CharacterAttr{ get; }
         public Military Military { get;  }
+        public Dictionary<string,int> status {get; set;}
         public void SetTeam(int Team);
         public string[] GetCommandBaseList();
         public string[] GetTypeCommandList();
@@ -21,6 +22,7 @@ namespace CardGameApp
         public GameObject mGameObject { get; set; }
         public CharacterAttr CharacterAttr{  get; set; } = new();
         public Military Military { get; set; }= new();
+        public Dictionary<string,int> status {get; set;}= new();
 
         public virtual string[] GetCommandBaseList()
         {

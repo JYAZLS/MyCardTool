@@ -21,6 +21,7 @@ namespace CardGameApp
             UI_Panel = new MenuPanel();
             UISystem = this.GetSystem<IUISystem>();//获取系统管理器
             UISystem.CreatePanel("MenuPanel", UI_Panel);
+            UISystem.OpenUI("MenuPanel");
 
             UI_Panel.NewGameOnClickCallBack += () => {
                 SceneController.Intance.SetState(new SetGame(SceneController.Intance), "SetGame");
@@ -34,8 +35,8 @@ namespace CardGameApp
 
         public override void StateEnd()
         {
-            UISystem.PanelClearAll();
-            UISystem.UIManager.DestoryUI("MenuPanel");
+            UISystem.PanelDestoryAll();
+            UISystem.DestroyUI("MenuPanel");
         }
 
         public IArchitecture GetArchitecture()

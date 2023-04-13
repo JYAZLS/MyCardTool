@@ -40,9 +40,9 @@ namespace CardGameApp
             UISystem.CreatePanel("EndMenu",UI_EndMenu);
             UISystem.CreatePanel("CommandMenu",UI_CommandView);
 
-            UISystem.PopPanel();
-            UISystem.PopPanel();
-
+            UISystem.OpenUI("ControlMenuPanel");
+            UISystem.OpenUI("CreateCharacterMenu");
+            
             UI_CreateCharacterMenu.ButtonClick += CreateCharacterButtonClickHandle;
             UI_EndMenu.ButtonClick += ActionMenuButtonClickHandle;
             UI_CommandView.ButtonClick += CommandClickHandle;
@@ -92,9 +92,13 @@ namespace CardGameApp
                                 this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
                             }
                             else
-                            {
-                                MapSystem.ShowMoveRange(PtrCharacter.mGameObject.transform,PtrCharacter.Military.MoveRange,PtrCharacter.Military.MilitaryName,PtrCharacter.Team);
-                                ProcessManager.Status = ProcessStatus.Move;
+                            {   
+                                if(BattleSystem.TeamNum == PtrCharacter.Team)//判断角色队伍是否当前回合
+                                {
+                                    MapSystem.ShowMoveRange(PtrCharacter.mGameObject.transform,PtrCharacter.Military.MoveRange,PtrCharacter.Military.MilitaryName,PtrCharacter.Team);
+                                    ProcessManager.Status = ProcessStatus.Move;
+                                }
+                                
                             }
                         }
                         
@@ -102,7 +106,7 @@ namespace CardGameApp
                     else if(Input.GetMouseButtonDown(1))
                     {
                         UISystem.PopPanel();
-                        UISystem.PushPanel("EndMenu",UI_EndMenu);
+                        UISystem.OpenUI("EndMenu");
                     }
                     
                     break;
@@ -117,7 +121,7 @@ namespace CardGameApp
                         ProcessManager.Status = ProcessStatus.None;
                         if(ProcessManager.SettingMode)
                         {
-                            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                            UISystem.OpenUI("CreateCharacterMenu");
                         }  
                     }
                     else if(Input.GetMouseButtonDown(1))
@@ -127,7 +131,7 @@ namespace CardGameApp
                         ProcessManager.Status = ProcessStatus.None;
                         if(ProcessManager.SettingMode)
                         {
-                            UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                            UISystem.OpenUI("CreateCharacterMenu");
                         }  
                     }
                     break;
@@ -181,14 +185,14 @@ namespace CardGameApp
                 {
                     ProcessManager.SettingMode = false;
                     UISystem.PanelClearAll();
-                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
+                    UISystem.OpenUI("ControlMenuPanel");
                 }
                 else
                 {
                     ProcessManager.SettingMode = true;
                     UISystem.PanelClearAll();
-                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("ControlMenuPanel");
+                    UISystem.OpenUI("CreateCharacterMenu");
                 }
                 
             }
@@ -207,13 +211,13 @@ namespace CardGameApp
                 UISystem.PopPanel();
                 if(ProcessManager.SettingMode)
                 {
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                 }
                 else
                 {
                     Debug.Log("Stop:"+ProcessManager.SettingMode);
                     UISystem.PanelClearAll();
-                    UISystem.PushPanel("ControlMenuPanel", UI_ControlMenu);
+                    UISystem.OpenUI("ControlMenuPanel");
                 }
             }
             else if(button == "Cancel")
@@ -221,7 +225,7 @@ namespace CardGameApp
                 UISystem.PopPanel();
                 if(ProcessManager.SettingMode)
                 {
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                 }
             }
             else
@@ -229,7 +233,7 @@ namespace CardGameApp
                 UISystem.PopPanel();
                 if(ProcessManager.SettingMode)
                 {
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                 }
             }
             
@@ -244,7 +248,7 @@ namespace CardGameApp
                 {
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                     ProcessManager.Status = ProcessStatus.None;
                     PtrCharacter = null;   
                 }
@@ -254,7 +258,7 @@ namespace CardGameApp
                     PtrCharacter = null;
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                     ProcessManager.Status = ProcessStatus.None;
                     PtrCharacter = null;
 
@@ -264,7 +268,7 @@ namespace CardGameApp
                     UI_CommandView.ClearButtonList();
                     UISystem.PopPanel();
                     CommandRoot.Add("ChangeType");
-                    UISystem.PushPanel("CommandMenu",UI_CommandView);
+                    UISystem.OpenUI("CommandMenu");
                     UI_CommandView.GenerateButtonList(UI_CommandView.ScrollViews["CommandScroll"].transform,PtrCharacter.GetTypeCommandList());
                     
                 }
@@ -274,7 +278,7 @@ namespace CardGameApp
                     UISystem.PopPanel();
                     if(ProcessManager.SettingMode)
                     {
-                        UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                        UISystem.OpenUI("CreateCharacterMenu");
                     }
                     ProcessManager.Status = ProcessStatus.None;
                     PtrCharacter = null;
@@ -287,7 +291,7 @@ namespace CardGameApp
                 UISystem.PopPanel();
                 if(ProcessManager.SettingMode)
                 {
-                    UISystem.PushPanel("CreateCharacterMenu", UI_CreateCharacterMenu);
+                    UISystem.OpenUI("CreateCharacterMenu");
                 }               
                 ProcessManager.Status = ProcessStatus.None;
                 PtrCharacter = null;

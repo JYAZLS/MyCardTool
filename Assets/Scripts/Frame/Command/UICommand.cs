@@ -17,7 +17,7 @@ namespace CardGameApp
         protected override void OnExecute()
         {
             IUISystem UISystem = this.GetSystem<IUISystem>();
-            UISystem.PushPanel("CommandMenu",Panel);
+            UISystem.OpenUI("CommandMenu");
             Panel.InputFieldViews["NameInput"].text = Character.CharacterAttr.Name;
             Panel.InputFieldViews["HPInputField"].text = Character.CharacterAttr.Hp.ToString() +"/" + Character.CharacterAttr.CurrentHp.ToString(); 
             Panel.InputFieldViews["TeamInputField"].text = Character.Team.ToString();
@@ -25,7 +25,7 @@ namespace CardGameApp
             Panel.GenerateButtonList(Panel.ScrollViews["CommandScroll"].transform,Character.GetCommandBaseList());
         }
     }
-
+    //改变人物类型
     public class ChangeHeroType : AbstractCommand
     {
         string typeName;
@@ -39,6 +39,19 @@ namespace CardGameApp
         {
             Character.Military.MilitaryName = typeName;
             Character.Military.MoveRange = ResManager.Intance.CharacterBaseInfo[typeName].MoveRange;
+        }
+    }
+    public class OpenUI: AbstractCommand
+    {
+        string UI;
+        public OpenUI(string ui)
+        {
+            UI = ui;
+        }
+        protected override void OnExecute()
+        {
+            IUISystem UIsystem = this.GetSystem<IUISystem>();
+            UIsystem.OpenUI(UI);
         }
     }
 }

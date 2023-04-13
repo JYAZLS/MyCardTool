@@ -135,7 +135,7 @@ namespace CardGameApp
             {
                 if (status)
                 {
-                    //Debug.Log("SetGamePanel");
+                    //Debug.Log("ControlMenuPanel");
                     GameObject ControlMenuPanel = res.Asset as GameObject;
                     this.SendCommand(new LoadUIResCommand("ControlMenuPanel", ControlMenuPanel));
                 }
@@ -145,7 +145,7 @@ namespace CardGameApp
             {
                 if (status)
                 {
-                    //Debug.Log("SetGamePanel");
+                    //Debug.Log("CreateCharacterMenu");
                     GameObject CreateCharacterMenu = res.Asset as GameObject;
                     this.SendCommand(new LoadUIResCommand("CreateCharacterMenu", CreateCharacterMenu));
                 }
@@ -155,7 +155,7 @@ namespace CardGameApp
             {
                 if (status)
                 {
-                    //Debug.Log("SetGamePanel");
+                    //Debug.Log("EndMenu");
                     GameObject EndMenu = res.Asset as GameObject;
                     this.SendCommand(new LoadUIResCommand("EndMenu", EndMenu));
                 }
@@ -164,7 +164,7 @@ namespace CardGameApp
             {
                 if (status)
                 {
-                    //Debug.Log("SetGamePanel");
+                    //Debug.Log("CommandMenu");
                     GameObject CommandMenu = res.Asset as GameObject;
                     this.SendCommand(new LoadUIResCommand("CommandMenu", CommandMenu));
                 }
