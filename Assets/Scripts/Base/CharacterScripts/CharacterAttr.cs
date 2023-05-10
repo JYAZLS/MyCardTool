@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 namespace CardGameApp
 {
+    [System.Serializable]
     public class CharacterAttr
     {
         public string Name;

@@ -18,5 +18,6 @@ namespace CardGameApp
         public GameObject ButtonPoolMgr {get; set;}
         public PathPool   PathPool{get; set;}
         public GameObject PathPoolMgr { get; set;}
+        public GameObject Cursor { get; set;}
 	}
 }

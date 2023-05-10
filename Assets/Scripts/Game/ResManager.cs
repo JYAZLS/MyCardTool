@@ -207,6 +207,14 @@ namespace CardGameApp
                     this.SendCommand(new LoadPathPrefab(Pathprefab));
                 }
             }));
+            mResLoader.Add2Load<GameObject>("ui","Cursor", ((status,res) =>
+            {
+                if(status)
+                {
+                    GameObject Cursor = res.Asset as GameObject;
+                    this.SendCommand(new LoadCursorPrefab(Cursor));
+                }
+            }));
         }
     }
 }

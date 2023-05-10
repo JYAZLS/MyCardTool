@@ -19,6 +19,8 @@ namespace CardGameApp
         private IBattleSystem BattleSystem;
         private ICharacter PtrCharacter = null;
         private List<string> CommandRoot = new ();
+        private PlayerController playerController;
+        private CharacterFactory characterFactory;
         public Game(SceneController controller): base(controller)
         {
             this.StateName = "Game";
@@ -35,6 +37,14 @@ namespace CardGameApp
             UISystem = this.GetSystem<IUISystem>();//获取UI系统
             MapSystem = this.GetSystem<IMapSystem>();//地图系统
             BattleSystem = this.GetSystem<IBattleSystem>();//人物系统
+
+            GameObject cursor = ResManager.Intance.Cursor.Instantiate<GameObject>();
+            GameObject GameController = new GameObject("GameController");
+            playerController = GameController.AddComponent<PlayerController>();
+            characterFactory = GameController.AddComponent<CharacterFactory>();
+            cursor.name = "Cursor";
+            MapSystem.AddCursor(cursor);
+
             UISystem.CreatePanel("ControlMenuPanel", UI_ControlMenu);
             UISystem.CreatePanel("CreateCharacterMenu", UI_CreateCharacterMenu);
             UISystem.CreatePanel("EndMenu",UI_EndMenu);
@@ -75,102 +85,6 @@ namespace CardGameApp
         {
             MapSystem.Updated();
             MapSystem.CheckColider();
-            ICharacter CurrentUnit = BattleSystem.GetCharacter(MapSystem.CursorVecter);
-            switch(ProcessManager.Status)
-            {
-                case ProcessStatus.None:
-                    if(Input.GetMouseButtonDown(0))
-                    {
-                        if((PtrCharacter == null) && (CurrentUnit != null))
-                        {
-                            PtrCharacter = CurrentUnit;
-                            if(ProcessManager.SettingMode)
-                            {
-                                ProcessManager.Status = ProcessStatus.Command;
-                                UISystem.PopPanel();
-                                //指令栏
-                                this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
-                            }
-                            else
-                            {   
-                                if(BattleSystem.TeamNum == PtrCharacter.Team)//判断角色队伍是否当前回合
-                                {
-                                    MapSystem.ShowMoveRange(PtrCharacter.mGameObject.transform,PtrCharacter.Military.MoveRange,PtrCharacter.Military.MilitaryName,PtrCharacter.Team);
-                                    ProcessManager.Status = ProcessStatus.Move;
-                                }
-                                
-                            }
-                        }
-                        
-                    }
-                    else if(Input.GetMouseButtonDown(1))
-                    {
-                        UISystem.PopPanel();
-                        UISystem.OpenUI("EndMenu");
-                    }
-                    
-                    break;
-                case ProcessStatus.SetCharacter:
-                    BattleSystem.DragCharacter(BattleSystem.Hero,MapSystem.CursorVecter);
-                    //Debug.Log(MapSystem.CurrentTile.ColiderBox);
-                    if(Input.GetMouseButtonDown(0) && !MapSystem.CurrentTile.ColiderBox)
-                    {
-                        
-                        BattleSystem.PlaceCharacter(BattleSystem.Hero);
-                        BattleSystem.Hero = null;
-                        ProcessManager.Status = ProcessStatus.None;
-                        if(ProcessManager.SettingMode)
-                        {
-                            UISystem.OpenUI("CreateCharacterMenu");
-                        }  
-                    }
-                    else if(Input.GetMouseButtonDown(1))
-                    {
-                        BattleSystem.ReleaseCharacter(BattleSystem.Hero);
-                        BattleSystem.Hero = null;
-                        ProcessManager.Status = ProcessStatus.None;
-                        if(ProcessManager.SettingMode)
-                        {
-                            UISystem.OpenUI("CreateCharacterMenu");
-                        }  
-                    }
-                    break;
-                case ProcessStatus.Move:
-                    MapSystem.ShowMovePath(PtrCharacter.mGameObject.transform.position,MapSystem.CursorVecter);
-                    if(Input.GetMouseButtonDown(0) && !MapSystem.CurrentTile.ColiderBox && MapSystem.isInOpenList(MapSystem.CurrentTile.id)) 
-                    {
-                        List<Vector3> path = new List<Vector3>();
-                        MapSystem.getPathTransform(ref path);
-                        ProcessManager.Status = ProcessStatus.Moving;
-                        ActionManager.Intance.MoveToAction(PtrCharacter.mGameObject.transform,path);
-                    }
-                    else if(Input.GetMouseButtonDown(1))
-                    {
-                        MapSystem.ClearMoveRange();
-                        ProcessManager.Status = ProcessStatus.None;
-                        PtrCharacter = null;
-                    }
-                    break;
-                case ProcessStatus.Moving:
-                    break;
-                case ProcessStatus.MoveEnd:
-                    this.SendCommand(new UICommandMenu(UI_CommandView,PtrCharacter));
-                    MapSystem.ClearMoveRange();
-                    ProcessManager.Status = ProcessStatus.Command;
-                    break;
-                case ProcessStatus.Command:
-                    if(Input.GetMouseButtonDown(1))
-                    {
-                        UISystem.PopPanel();
-                        PtrCharacter.mGameObject.Position(ActionManager.Intance.LastPosition);
-                        ProcessManager.Status = ProcessStatus.None;
-                        PtrCharacter = null;
-                    }    
-                    break;
-                case ProcessStatus.End:
-                    break;
-            }
-
         }
 
         public override void StateEnd()

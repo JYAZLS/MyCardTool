@@ -51,5 +51,19 @@ namespace CardGameApp
             ResManager.Intance.PathPool.SetPrefab(gameObject);
         }
     }
+
+    public class LoadCursorPrefab : AbstractCommand
+    {
+        GameObject gameObject = null;
+
+        public LoadCursorPrefab(GameObject game)
+        {
+            gameObject = game;
+        }
+        protected override void OnExecute()
+        {
+            ResManager.Intance.Cursor = gameObject;
+        }
+    }
 }
 
