@@ -9,17 +9,24 @@ namespace CardGameApp
 {
     public interface IGameModel : IModel
     {
-        public MapInfo mapInfo { get; }
-        public PlayerInfo playerInfo { get; }
+        public MapInfo mapInfo {get;set;}
+        public BattleInfo battleInfo {get;set;}
+        public PlayerInfo playerInfo {get;set;}
     }
     public class GameModel : AbstractModel, IGameModel
     {
-        public MapInfo mapInfo { get; } = new MapInfo();
-        public PlayerInfo playerInfo { get; } = new PlayerInfo();
-
+        public MapInfo mapInfo {get;set;}
+        public BattleInfo battleInfo {get;set;}
+        public PlayerInfo playerInfo {get;set;}
         protected override void OnInit()
         {
-
+            mapInfo = new();
+            battleInfo = new();
+            playerInfo = new();
+            mapInfo.MapTiles = new();
+            playerInfo.characterInfo = new();
+            battleInfo.CurrentNumber = new();
+            battleInfo.RoundNum = new();
         }
     }
 
@@ -28,20 +35,30 @@ namespace CardGameApp
         public string Name;
         public int WidthLen;
         public int HeightLen;
+        public List<GridInfo> MapTiles;
     }
 
     public class PlayerInfo
     {
-        //队伍数量
-        public int PlayerTeamNumber;
-        //队伍以及对应的角色
+        public Dictionary<int,CharacterInfo> characterInfo;
+    }
+    public class BattleInfo
+    {
+        public int TotalTeamNumber;
+        public BindableProperty<int> RoundNum;  
+        public BindableProperty<int> CurrentNumber;
     }
     public struct CharacterInfo
-    {
-        public int Hp;
+    { 
+        public string Name;
         public string Type;
+        public string BaseName;
+        public int Hp;
         public int CurrentHP;
         public int MoveRange;
+        public int AttackRange;
+        public Dictionary<string,int> status;
+        public Transform transform;
     }
 }
 

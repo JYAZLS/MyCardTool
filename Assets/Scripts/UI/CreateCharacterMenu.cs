@@ -76,7 +76,7 @@ namespace CardGameApp
 
         private void PauseListenerClick(ref Button[] buttons)
         {
-            foreach (Button button in buttons)//反射添加点击按钮事件
+            foreach (Button button in buttons)//暂停按钮事件
             {
                 button.onClick.RemoveAllListeners();
             }

@@ -39,6 +39,7 @@ namespace QFramework
         public static Custom<TData> Allocate()
         {
             var custom = mSimpleObjectPool.Allocate();
+            custom.ActionID = ActionKit.ID_GENERATOR++;
             custom.Deinited = false;
             custom.Reset();
             return custom;
@@ -51,21 +52,22 @@ namespace QFramework
             if (!Deinited)
             {
                 Deinited = true;
-
                 mOnStart = null;
                 mOnExecute = null;
                 mOnFinish = null;
 
-                mSimpleObjectPool.Recycle(this);
+                ActionQueue.AddCallback(new ActionQueueRecycleCallback<Custom<TData>>(mSimpleObjectPool,this));
             }
         }
 
         public void Reset()
         {
+            Paused = false;
             Status = ActionStatus.NotStart;
         }
 
         public bool Deinited { get; set; }
+        public ulong ActionID { get; set; }
         public ActionStatus Status { get; set; }
 
         public void OnStart()

@@ -15,6 +15,8 @@ namespace CardGameApp
         public int Hp;
         public int CurrentHp;
         public int MoveRange;
+        public int AttackRange;
+        
     }
 }
 

@@ -29,7 +29,7 @@ namespace CardGameApp
                 .OnComplete(custom.Finish);});
                 custom.OnFinish(()=>{
                     Debug.Log("On Finish");
-                    ProcessManager.Status = ProcessStatus.MoveEnd;
+                    // ProcessManager.Status = ProcessStatus.MoveEnd;
                 });
             })
             .Start(this);

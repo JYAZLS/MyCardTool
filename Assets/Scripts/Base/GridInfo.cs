@@ -10,5 +10,6 @@ namespace CardGameApp
         public string Name { get; set;}
         public int  GridType  {get; set;}
         public bool ColiderBox { get; set;}
+        public Vector3  position;
     }
 }

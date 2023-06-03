@@ -8,8 +8,7 @@ namespace CardGameApp
     public class PlayerController : MonoBehaviour,IController
     {
         public ICharacter SelectPlayer;
-        IMapSystem MapManager;
-        
+        IMapSystem MapManager;     
         ABPath ABPathMgr = new();
         [SerializeField]
         private bool isReady = false;
@@ -17,7 +16,7 @@ namespace CardGameApp
         private void Start() {
             MapManager = this.GetSystem<IMapSystem>();
         }
-        private void Update() 
+        public void Updated()
         {
             if(Input.GetMouseButtonDown(1))
             {
@@ -41,8 +40,9 @@ namespace CardGameApp
                 //Debug.Log(CanMovePathNode.Count);
                 MapManager.FillColor(CanMovePathNode,Color.green);
                 CanMovePathNode.Clear();
-                Vector3 MousePos = Input.mousePosition;
-                UnityEngine.Vector3 worldpos = Camera.main.ScreenToWorldPoint(MousePos);
+                Vector3 worldpos = InputHandle.Intance.InputVector3;
+                // Vector3 MousePos = Input.mousePosition;
+                // UnityEngine.Vector3 worldpos = Camera.main.ScreenToWorldPoint(MousePos);
                 ABPathMgr.ShowMovePath(PlayerPos,worldpos,ref CanMovePathNode);
                 MapManager.FillColor(CanMovePathNode,Color.blue);             
             }
