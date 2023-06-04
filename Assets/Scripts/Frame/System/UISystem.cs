@@ -19,6 +19,7 @@ namespace CardGameApp
         public string GetCurrentPanelName();
         public void PanelDestoryAll();
         public void DestroyUI(string ui);
+        public void CloseStrPanel(string UI);
     }
     /// <summary>
     /// UI系统，控制UI相关资源
@@ -42,10 +43,11 @@ namespace CardGameApp
         {
             panel.PanelObject =  UIManager.GetUI(UI_Name);
             //Debug.Log(panel);
+            panel.PanelName = UI_Name;
             UI_Panel.Add(UI_Name,panel);
-            PanelManager.Push(UI_Name,panel);
+            PanelManager.PushUI(UI_Name,panel);
             panel.OnEnter();
-            PanelManager.Pop();
+            PanelManager.PopUI();
         }
 
         // public void PushPanel(string UI_Name, BasePanel panel)
@@ -57,7 +59,7 @@ namespace CardGameApp
 
         public void PopPanel()
         {
-            PanelManager.Pop();
+            PanelManager.PopUI();
         }
 
         public void PanelClearAll()
@@ -68,9 +70,16 @@ namespace CardGameApp
         public void OpenUI(string UI)
         {
             UI_Panel[UI].PanelObject.SetActive(true);
-            PanelManager.Push(UI,UI_Panel[UI]);
+            PanelManager.PushUI(UI,UI_Panel[UI]);
         }
 
+        public void CloseStrPanel(string UI)
+        {
+            if(PanelManager.PopStrPanel(UI))
+            {
+                UI_Panel[UI].PanelObject.SetActive(false);
+            }
+        }
         public string GetCurrentPanelName()
         {
             return PanelManager.GetCurrentPanelName();

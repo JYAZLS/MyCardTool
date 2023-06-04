@@ -8,8 +8,8 @@ namespace CardGameApp
     public class UICommandMenu : AbstractCommand
     {
         CommandView Panel;
-        ICharacter Character;
-        public UICommandMenu(CommandView panel,ICharacter character)
+        UnitBase Character;
+        public UICommandMenu(CommandView panel,UnitBase character)
         {
             Panel = panel;
             Character = character;
@@ -18,19 +18,19 @@ namespace CardGameApp
         {
             IUISystem UISystem = this.GetSystem<IUISystem>();
             UISystem.OpenUI("CommandMenu");
-            Panel.InputFieldViews["NameInput"].text = Character.CharacterAttr.Name;
-            Panel.InputFieldViews["HPInputField"].text = Character.CharacterAttr.Hp.ToString() +"/" + Character.CharacterAttr.CurrentHp.ToString(); 
+            Panel.InputFieldViews["NameInput"].text = Character.Attr.Name;
+            Panel.InputFieldViews["HPInputField"].text = Character.Attr.Hp.ToString() +"/" + Character.Attr.CurrentHp.ToString(); 
             Panel.InputFieldViews["TeamInputField"].text = Character.Team.ToString();
             Panel.ClearButtonList();
-            Panel.GenerateButtonList(Panel.ScrollViews["CommandScroll"].transform,Character.GetCommandBaseList());
+            Panel.GenerateButtonList(Panel.ScrollViews["CommandScroll"].transform,Character.properties.GetCommandBaseList());
         }
     }
     //改变人物类型
     public class ChangeHeroType : AbstractCommand
     {
         string typeName;
-        ICharacter Character;
-        public ChangeHeroType(ICharacter character,string typename)
+        UnitBase Character;
+        public ChangeHeroType(UnitBase character,string typename)
         {
             Character = character;
             typeName = typename;
@@ -52,6 +52,27 @@ namespace CardGameApp
         {
             IUISystem UIsystem = this.GetSystem<IUISystem>();
             UIsystem.OpenUI(UI);
+        }
+    }
+    public class CloseUI: AbstractCommand
+    {
+        protected override void OnExecute()
+        {
+            IUISystem UIsystem = this.GetSystem<IUISystem>();
+            UIsystem.PopPanel();
+        }
+    }
+    public class CloseStrPanel: AbstractCommand
+    {
+        string UI;
+        public CloseStrPanel(string ui)
+        {
+            UI = ui;
+        }
+        protected override void OnExecute()
+        {
+            IUISystem UIsystem = this.GetSystem<IUISystem>();
+            UIsystem.CloseStrPanel(UI);
         }
     }
 }

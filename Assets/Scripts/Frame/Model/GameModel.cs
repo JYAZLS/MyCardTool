@@ -27,6 +27,7 @@ namespace CardGameApp
             playerInfo.characterInfo = new();
             battleInfo.CurrentNumber = new();
             battleInfo.RoundNum = new();
+            battleInfo.EditorMode = new();
         }
     }
 
@@ -40,13 +41,15 @@ namespace CardGameApp
 
     public class PlayerInfo
     {
-        public Dictionary<int,CharacterInfo> characterInfo;
+        public Dictionary<int,UnitBase> characterInfo;
     }
     public class BattleInfo
     {
         public int TotalTeamNumber;
         public BindableProperty<int> RoundNum;  
         public BindableProperty<int> CurrentNumber;
+        public BindableProperty<bool> EditorMode;
+        public Dictionary<int,List<int>> TeamList;
     }
     public struct CharacterInfo
     { 
@@ -57,6 +60,7 @@ namespace CardGameApp
         public int CurrentHP;
         public int MoveRange;
         public int AttackRange;
+        public int Team;
         public Dictionary<string,int> status;
         public Transform transform;
     }

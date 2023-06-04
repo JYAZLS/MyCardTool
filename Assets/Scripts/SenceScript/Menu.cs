@@ -21,7 +21,8 @@ namespace CardGameApp
             UI_Panel = new MenuPanel();
             UISystem = this.GetSystem<IUISystem>();//获取系统管理器
             UISystem.CreatePanel("MenuPanel", UI_Panel);
-            UISystem.OpenUI("MenuPanel");
+            //UISystem.OpenUI("MenuPanel");
+            this.SendCommand(new OpenUI("MenuPanel"));
 
             UI_Panel.NewGameOnClickCallBack += () => {
                 SceneController.Intance.SetState(new SetGame(SceneController.Intance), "SetGame");

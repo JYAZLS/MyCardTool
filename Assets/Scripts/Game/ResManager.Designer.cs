@@ -10,7 +10,7 @@ namespace CardGameApp
 	public partial class ResManager
 	{
 		public Dictionary<string, GameObject> UI_GameObjectRes { get; set;} = new();
-		public Dictionary<string, CharacterInfo> CharacterBaseInfo { get; set;} = new();//存放地图基础数据
+		public Dictionary<string, CharacterInfo> CharacterBaseInfo { get; set;} = new();//存放人物基础数据
         public Dictionary<string, MapInfo> MapBaseInfo { get; set;} = new();//存放地图基础数据
         public Dictionary<string, CharacterPool> CharacterPlayerPool { get; set; } = new();
         public GameObject CharacterPoolMgr { get; set;}

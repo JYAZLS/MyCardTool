@@ -11,6 +11,7 @@ namespace CardGameApp
     /// </summary>
     public abstract class BasePanel
     {
+        public string PanelName;
         public GameObject PanelObject;
         public virtual void OnEnter() { }
         public virtual void OnExit() => PanelObject.SetActive(false);

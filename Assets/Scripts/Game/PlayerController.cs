@@ -7,7 +7,7 @@ namespace CardGameApp
 {
     public class PlayerController : MonoBehaviour,IController
     {
-        public ICharacter SelectPlayer;
+        public UnitBase SelectPlayer;
         IMapSystem MapManager;     
         ABPath ABPathMgr = new();
         [SerializeField]
@@ -34,7 +34,7 @@ namespace CardGameApp
             }
             if(isReady)
             {
-                Vector3 PlayerPos = SelectPlayer.mGameObject.transform.position;
+                Vector3 PlayerPos = SelectPlayer.gameObject.transform.position;
                 List<Vector3>CanMovePathNode = new();
                 CanMovePathNode = ABPathMgr.GetMoveRange();
                 //Debug.Log(CanMovePathNode.Count);

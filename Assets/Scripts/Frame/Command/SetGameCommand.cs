@@ -51,4 +51,17 @@ namespace CardGameApp
             }
         }
     }
+
+    public class SetNextTeam : AbstractCommand
+    {
+        protected override void OnExecute()
+        {
+            IGameModel mModel = this.GetModel<IGameModel>();
+            mModel.battleInfo.CurrentNumber.Value++;
+            if(mModel.battleInfo.CurrentNumber >= mModel.battleInfo.TotalTeamNumber)
+            {
+                mModel.battleInfo.CurrentNumber.Value = 0;
+            }
+        }
+    }
 }

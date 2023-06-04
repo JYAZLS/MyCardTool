@@ -6,11 +6,11 @@ namespace CardGameApp
 {
     public class PanelManager
     {
+        List<string> PanelList = new();
         private Stack<BasePanel> PanelStack;
-        private Stack<string> PanelName;
-        public PanelManager() {PanelStack = new Stack<BasePanel>(); PanelName = new Stack<string>();}
+        public PanelManager() {PanelStack = new Stack<BasePanel>();}
         private BasePanel panel;
-        public void Push(string panelname,BasePanel NextPanel)
+        public void PushUI(string panelname,BasePanel NextPanel)
         { 
             if(PanelStack.Count>0)
             {
@@ -18,17 +18,16 @@ namespace CardGameApp
                 panel.OnPasue();//停止操作                 
             }
             PanelStack.Push(NextPanel);
-            PanelName.Push(panelname);
+            PanelList.Add(panelname);
         }
 
-        public void Pop()
+        public void PopUI()
         {
             if(PanelStack.Count>0)
             {
                 PanelStack.Peek().OnExit();//退出最上层的Panel
+                PanelList.Remove(PanelStack.Peek().PanelName);
                 PanelStack.Pop();
-                PanelName.Peek();
-                PanelName.Pop();
             }
             if(PanelStack.Count>0)
             {
@@ -43,9 +42,8 @@ namespace CardGameApp
                 if (PanelStack.Count > 0)
                 {
                     PanelStack.Peek().OnExit();//退出最上层的Panel
+                    PanelList.Remove(PanelStack.Peek().PanelName);
                     PanelStack.Pop();
-                    PanelName.Peek();
-                    PanelName.Pop();
                 }
                 if (PanelStack.Count > 0)
                 {
@@ -56,11 +54,38 @@ namespace CardGameApp
 
         public string GetCurrentPanelName()
         {
-            if(PanelName.Count>0)
+            if(PanelStack.Count>0)
             {
-                return PanelName.Peek();
+                return PanelStack.Peek().PanelName;
             }
             return null;
+        }
+
+        public bool PopStrPanel(string UI)
+        {
+            bool flag = false;
+            if(PanelList.Contains(UI))
+            {
+                Stack<BasePanel> tempPanel = new();
+                while(!flag)
+                {
+                    if(PanelStack.Peek().PanelName == UI)
+                    {
+                        PopUI();
+                        flag = true;
+                    }
+                    else
+                    {
+                        tempPanel.Push(PanelStack.Peek());
+                    } 
+                }
+                while(tempPanel.Count>0)
+                {
+                    PushUI(tempPanel.Peek().PanelName,tempPanel.Peek());
+                    tempPanel.Pop();
+                }
+            }
+            return flag;
         }
     }
 }

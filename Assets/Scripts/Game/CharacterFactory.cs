@@ -28,6 +28,7 @@ namespace CardGameApp
                     if(flag)
                     {
                         SetPlayer = null;
+                        this.SendCommand(new OpenUI("CreateCharacterMenu")); 
                     }
                 }
             }

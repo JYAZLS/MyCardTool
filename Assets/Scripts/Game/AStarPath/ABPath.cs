@@ -7,7 +7,7 @@ namespace CardGameApp
 {
     public class ABPath
     {
-        ICharacter character;
+        UnitBase character;
         int Width = 0;
         int Height = 0;
         List<int> OpenList = new();
@@ -15,7 +15,7 @@ namespace CardGameApp
         private List<int> Direct = new(){-1, 0,1 , 0};
         Func<int> m_CostMove;
         Func<int,bool> m_CanMove;
-        public void ShowMoveRange(ICharacter _character,ref List<Vector3>GetCanMovePathNode,int _Width,int _Height)
+        public void ShowMoveRange(UnitBase _character,ref List<Vector3>GetCanMovePathNode,int _Width,int _Height)
         {
             CloseList.Clear();
             OpenList.Clear();
@@ -24,7 +24,7 @@ namespace CardGameApp
             Height = _Height;
             Direct[1] = -Width;
             Direct[3] = Width;
-            int start = Vec3ToID(_character.mGameObject.transform.position);
+            int start = Vec3ToID(_character.gameObject.transform.position);
             findNearNode(start,_character.Military.MoveRange);
             //Debug.Log(_character.Military.MoveRange);
             foreach(int it in OpenList)

@@ -31,7 +31,8 @@ namespace CardGameApp
             UI_Panel = new SetGamePanel();
             UISystem = this.GetSystem<IUISystem>();//获取系统管理器
             UISystem.CreatePanel("SetGamePanel", UI_Panel);
-            UISystem.OpenUI("SetGamePanel");
+            //UISystem.OpenUI("SetGamePanel");
+            this.SendCommand(new OpenUI("SetGamePanel"));
             //设置默认值
             UI_Panel.InputFields["InputField"].text = "2";
             //获取数据
