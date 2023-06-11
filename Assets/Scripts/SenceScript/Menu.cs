@@ -17,12 +17,11 @@ namespace CardGameApp
         }
         public override void StateBegin()
         {
-            Debug.Log("Menu StateBegin");
+            //Debug.Log("Menu StateBegin");
             UI_Panel = new MenuPanel();
             UISystem = this.GetSystem<IUISystem>();//获取系统管理器
             UISystem.CreatePanel("MenuPanel", UI_Panel);
-            //UISystem.OpenUI("MenuPanel");
-            this.SendCommand(new OpenUI("MenuPanel"));
+            UISystem.OpenUI("MenuPanel");
 
             UI_Panel.NewGameOnClickCallBack += () => {
                 SceneController.Intance.SetState(new SetGame(SceneController.Intance), "SetGame");

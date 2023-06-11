@@ -65,8 +65,8 @@ namespace CardGameApp
         protected override bool OnExecute()
         {
             IGameModel GameData = this.GetModel<IGameModel>();
-            
-            int id = MapManager.World2Index(InputHandle.Intance.InputVector3,GameData.mapInfo.WidthLen,GameData.mapInfo.HeightLen);
+            IInputSystem InputSys = this.GetSystem<IInputSystem>();
+            int id = MapManager.World2Index(InputSys.handle.InputVector3,GameData.mapInfo.WidthLen,GameData.mapInfo.HeightLen);
             if(id != -1 && !GameData.mapInfo.MapTiles[id].ColiderBox)
             {
                 return true;

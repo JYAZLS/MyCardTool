@@ -13,13 +13,15 @@ namespace CardGameApp
         private float cameraMoveSpeed = 1f;
         private float borderWidth = 10f;
         private float mapScaleMax = 2f;
-        private float mapScaleMin = 1f;
+        private float mapScaleMin = 1f;  
+        public List<SpriteRenderer>  PathObjects;
         // Start is called before the first frame update
         void Start()
         {
             GameData = this.GetModel<IGameModel>();
             WidthLen = GameData.mapInfo.WidthLen;
             HeightLen = GameData.mapInfo.HeightLen;
+            PathObjects = new();
         }
 
         // Update is called once per frame

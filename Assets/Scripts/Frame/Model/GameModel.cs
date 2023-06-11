@@ -60,9 +60,9 @@ namespace CardGameApp
         public int CurrentHP;
         public int MoveRange;
         public int AttackRange;
-        public int Team;
-        public Dictionary<string,int> status;
-        public Transform transform;
+        // public int Team;
+        // public Dictionary<string,int> status;
+        // public Transform transform;
     }
 }
 

@@ -16,8 +16,9 @@ namespace CardGameApp
             RegisterSystem<IMapSystem>(new MapSystem());
             RegisterSystem<IUISystem>(new UISystem());
             RegisterSystem<IBattleSystem>(new BattleSystem());
-
-
+            RegisterSystem<IInputSystem>(new InputSystem());
+            RegisterSystem<GameEvent>(new GameEvent());
+ 
         }
     }
 

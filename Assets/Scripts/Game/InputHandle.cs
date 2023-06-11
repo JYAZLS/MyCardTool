@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace CardGameApp
 {
-    public class InputHandle : UnitySingleton<InputHandle>
+    public class InputHandle : MonoBehaviour
     {
         public Vector3 InputVector3;
+        public UnitBase currentBase;
+        public GridInfo gridInfo;
         // public int MapIndex;
     }
 }

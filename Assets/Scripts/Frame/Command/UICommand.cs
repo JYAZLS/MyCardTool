@@ -41,39 +41,39 @@ namespace CardGameApp
             Character.Military.MoveRange = ResManager.Intance.CharacterBaseInfo[typeName].MoveRange;
         }
     }
-    public class OpenUI: AbstractCommand
-    {
-        string UI;
-        public OpenUI(string ui)
-        {
-            UI = ui;
-        }
-        protected override void OnExecute()
-        {
-            IUISystem UIsystem = this.GetSystem<IUISystem>();
-            UIsystem.OpenUI(UI);
-        }
-    }
-    public class CloseUI: AbstractCommand
-    {
-        protected override void OnExecute()
-        {
-            IUISystem UIsystem = this.GetSystem<IUISystem>();
-            UIsystem.PopPanel();
-        }
-    }
-    public class CloseStrPanel: AbstractCommand
-    {
-        string UI;
-        public CloseStrPanel(string ui)
-        {
-            UI = ui;
-        }
-        protected override void OnExecute()
-        {
-            IUISystem UIsystem = this.GetSystem<IUISystem>();
-            UIsystem.CloseStrPanel(UI);
-        }
-    }
+    // public class OpenUI: AbstractCommand
+    // {
+    //     string UI;
+    //     public OpenUI(string ui)
+    //     {
+    //         UI = ui;
+    //     }
+    //     protected override void OnExecute()
+    //     {
+    //         IUISystem UIsystem = this.GetSystem<IUISystem>();
+    //         UIsystem.OpenUI(UI);
+    //     }
+    // }
+    // public class CloseUI: AbstractCommand
+    // {
+    //     protected override void OnExecute()
+    //     {
+    //         IUISystem UIsystem = this.GetSystem<IUISystem>();
+    //         UIsystem.PopPanel();
+    //     }
+    // }
+    // public class CloseStrPanel: AbstractCommand
+    // {
+    //     string UI;
+    //     public CloseStrPanel(string ui)
+    //     {
+    //         UI = ui;
+    //     }
+    //     protected override void OnExecute()
+    //     {
+    //         IUISystem UIsystem = this.GetSystem<IUISystem>();
+    //         UIsystem.CloseStrPanel(UI);
+    //     }
+    // }
 }
 

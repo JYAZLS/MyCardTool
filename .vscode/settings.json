@@ -31,7 +31,7 @@
     },
     "hiWin.properties": {
 
-        "hinWin.properties.opacity": 220,
+        "hinWin.properties.opacity": 240,
         "hinWin.properties.z-order": "no top most",
         "hinWin.properties.show": "maximize"
     }

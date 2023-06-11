@@ -23,4 +23,15 @@ public static class GameID
         }
         return id;
     }
+    public static void registerID(int id)
+    {
+        UniqueidList.Add(id);
+    }
+    public static void unregisterID(int id)
+    {
+        if(UniqueidList.Contains(id))
+        {
+            UniqueidList.Remove(id);
+        }
+    }
 }
